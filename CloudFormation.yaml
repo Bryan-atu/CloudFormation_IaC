@@ -70,3 +70,16 @@ Resources:
           FromPort: 22
           ToPort: 22
           SourceSecurityGroupId: !Ref PublicInstanceSecurityGroup
+  
+  PublicEC2Instance:
+    Type: AWS::EC2::Instance
+    Properties: 
+      InstanceType: t2.micro
+      KeyName: samplepair
+      SubnetId: !Ref PublicSubnet
+      SecurityGroupIds:
+        - !Ref PublicInstanceSecurityGroup
+      ImageId: ami-0a1e2d3aebc381496
+      Tags:
+        - Key: Name
+          Value: PublicInstance
