@@ -12,12 +12,14 @@ Resources:
       VpcId: !Ref VPC
       CidrBlock: 10.0.1.0/24
       MapPublicIpOnLaunch: true
+      AvailabilityZone: eu-west-1a
 
   PrivateSubnet:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref VPC
       CidrBlock: 10.0.2.0/24
+      AvailabilityZone: eu-west-1a
   
   InternetGateway:
     Type: AWS::EC2::InternetGateway
@@ -63,13 +65,35 @@ Resources:
   PrivateInstanceSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: Allow SSH only from public instance
+      GroupDescription: Allow SSH only from jump box to private instance
       VpcId: !Ref VPC
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 22
           ToPort: 22
-          SourceSecurityGroupId: !Ref PublicInstanceSecurityGroup
+          SourceSecurityGroupId: !Ref JumpBoxSecurityGroup
+
+  JumpBoxSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow SSH access to jump box
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+  
+  JumpBoxEC2Instance:
+    Type: AWS::EC2::Instance
+    Properties: 
+      InstanceType: t2.micro
+      KeyName: samplepair
+      SubnetId: !Ref PublicSubnet
+      ImageId: ami-01fe8a5feb270c44b
+      Tags:
+        - Key: Name
+          Value: JumpBoxInstance
   
   PublicEC2Instance:
     Type: AWS::EC2::Instance
