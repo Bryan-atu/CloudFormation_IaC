@@ -79,7 +79,7 @@ Resources:
       SubnetId: !Ref PublicSubnet
       SecurityGroupIds:
         - !Ref PublicInstanceSecurityGroup
-      ImageId: ami-02354e95b39ca8dec
+      ImageId: ami-01fe8a5feb270c44b 
       Tags:
         - Key: Name
           Value: PublicInstance
