@@ -83,3 +83,16 @@ Resources:
       Tags:
         - Key: Name
           Value: PublicInstance
+  
+  PrivateEC2Instance:
+    Type: AWS::EC2::Instance
+    Properties: 
+      InstanceType: t2.micro
+      KeyName: samplepair
+      SubnetId: !Ref PrivateSubnet
+      SecurityGroupIds:
+        - !Ref PrivateInstanceSecurityGroup
+      ImageId: ami-01fe8a5feb270c44b
+      Tags:
+        - Key: Name
+          Value: PrivateInstance
