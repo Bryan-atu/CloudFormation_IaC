@@ -67,10 +67,6 @@ Resources:
           FromPort: 22
           ToPort: 22
           CidrIp: 0.0.0.0/0
-        - IpProtocol: icmp
-          FromPort: -1
-          ToPort: -1
-          CidrIp: 0.0.0.0/0
 
   PrivateInstanceSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -82,10 +78,6 @@ Resources:
           FromPort: 22
           ToPort: 22
           SourceSecurityGroupId: !Ref JumpBoxSecurityGroup
-        - IpProtocol: icmp
-          FromPort: -1
-          ToPort: -1
-          CidrIp: 0.0.0.0/0
 
   JumpBoxSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -97,16 +89,11 @@ Resources:
           FromPort: 22
           ToPort: 22
           CidrIp: 0.0.0.0/0
-        #add regional rule, based on Ec2 recommendation
         - IpProtocol: tcp
           FromPort: 22
           ToPort: 22
           CidrIp: 18.202.216.48/29
-        - IpProtocol: icmp
-          FromPort: -1
-          ToPort: -1
-          CidrIp: 0.0.0.0/0
-  
+
   JumpBoxEC2Instance:
     Type: AWS::EC2::Instance
     Properties: 
