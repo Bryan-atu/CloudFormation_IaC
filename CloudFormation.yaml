@@ -42,6 +42,12 @@ Resources:
       DestinationCidrBlock: 0.0.0.0/0
       GatewayId: !Ref InternetGateway
 
+  PublicSubnetRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet
+      RouteTableId: !Ref PublicRouteTable
+
   PrivateRouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
@@ -61,6 +67,10 @@ Resources:
           FromPort: 22
           ToPort: 22
           CidrIp: 0.0.0.0/0
+        - IpProtocol: icmp
+          FromPort: -1
+          ToPort: -1
+          CidrIp: 0.0.0.0/0
 
   PrivateInstanceSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -72,6 +82,10 @@ Resources:
           FromPort: 22
           ToPort: 22
           SourceSecurityGroupId: !Ref JumpBoxSecurityGroup
+        - IpProtocol: icmp
+          FromPort: -1
+          ToPort: -1
+          CidrIp: 0.0.0.0/0
 
   JumpBoxSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -83,13 +97,24 @@ Resources:
           FromPort: 22
           ToPort: 22
           CidrIp: 0.0.0.0/0
+        #add regional rule, based on Ec2 recommendation
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 18.202.216.48/29
+        - IpProtocol: icmp
+          FromPort: -1
+          ToPort: -1
+          CidrIp: 0.0.0.0/0
   
   JumpBoxEC2Instance:
     Type: AWS::EC2::Instance
     Properties: 
       InstanceType: t2.micro
-      KeyName: samplepair
+      KeyName: IaC-keypair
       SubnetId: !Ref PublicSubnet
+      SecurityGroupIds:
+      - !Ref JumpBoxSecurityGroup
       ImageId: ami-01fe8a5feb270c44b
       Tags:
         - Key: Name
@@ -99,7 +124,7 @@ Resources:
     Type: AWS::EC2::Instance
     Properties: 
       InstanceType: t2.micro
-      KeyName: samplepair
+      KeyName: IaC-keypair
       SubnetId: !Ref PublicSubnet
       SecurityGroupIds:
         - !Ref PublicInstanceSecurityGroup
@@ -112,7 +137,7 @@ Resources:
     Type: AWS::EC2::Instance
     Properties: 
       InstanceType: t2.micro
-      KeyName: samplepair
+      KeyName: IaC-keypair
       SubnetId: !Ref PrivateSubnet
       SecurityGroupIds:
         - !Ref PrivateInstanceSecurityGroup
