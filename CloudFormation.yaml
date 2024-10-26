@@ -1,3 +1,13 @@
+Description: IaC lab submission 1
+
+Mappings:
+  RegionMap:
+    eu-west-1:
+      AMI: ami-01fe8a5feb270c44b
+  InstanceLimits:
+    eu-west-1:
+      MaxAllowedInstances: 10
+
 Resources:
   VPC:
     Type: AWS::EC2::VPC
@@ -102,7 +112,7 @@ Resources:
       SubnetId: !Ref PublicSubnet
       SecurityGroupIds:
       - !Ref JumpBoxSecurityGroup
-      ImageId: ami-01fe8a5feb270c44b
+      ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", AMI]
       Tags:
         - Key: Name
           Value: JumpBoxInstance
@@ -115,7 +125,7 @@ Resources:
       SubnetId: !Ref PublicSubnet
       SecurityGroupIds:
         - !Ref PublicInstanceSecurityGroup
-      ImageId: ami-01fe8a5feb270c44b 
+      ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", AMI] 
       Tags:
         - Key: Name
           Value: PublicInstance
@@ -128,7 +138,7 @@ Resources:
       SubnetId: !Ref PrivateSubnet
       SecurityGroupIds:
         - !Ref PrivateInstanceSecurityGroup
-      ImageId: ami-01fe8a5feb270c44b
+      ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", AMI]
       Tags:
         - Key: Name
           Value: PrivateInstance
