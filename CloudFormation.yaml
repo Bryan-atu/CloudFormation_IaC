@@ -1,5 +1,21 @@
 Description: IaC lab submission 1
 
+Parameters:
+  VpcCidr:
+    Type: String
+    Default: 10.0.0.0/16
+    Description: CIDR block for VPC
+
+  PublicSubnetCidr:
+    Type: String
+    Default: 10.0.1.0/24
+    Description: CIDR block for public subnet
+
+  PrivateSubnetCidr:
+    Type: String
+    Default: 10.0.2.0/24
+    Description: CIDR block for private subnet
+
 Mappings:
   RegionMap:
     eu-west-1:
@@ -12,7 +28,7 @@ Resources:
   VPC:
     Type: AWS::EC2::VPC
     Properties:
-      CidrBlock: 10.0.0.0/16
+      CidrBlock: !Ref VpcCidr
       EnableDnsSupport: true
       EnableDnsHostnames: true
   
@@ -20,7 +36,7 @@ Resources:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref VPC
-      CidrBlock: 10.0.1.0/24
+      CidrBlock: !Ref PublicSubnetCidr
       MapPublicIpOnLaunch: true
       AvailabilityZone: eu-west-1a
 
@@ -28,7 +44,7 @@ Resources:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref VPC
-      CidrBlock: 10.0.2.0/24
+      CidrBlock: !Ref PrivateSubnetCidr
       AvailabilityZone: eu-west-1a
   
   InternetGateway:
